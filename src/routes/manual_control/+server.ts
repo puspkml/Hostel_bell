@@ -10,7 +10,7 @@ export async function POST() {
         // List of ESP IPs to trigger simultaneously
         const espIPs = [
             
-            "10.110.231.128"
+            "10.110.105.39","10.110.105.38"
         ];
 
         console.log(`Triggering direct bell ring at ${espIPs.length} ESPs:`, espIPs);

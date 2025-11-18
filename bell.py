@@ -10,8 +10,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 # ESP configuration (commented for now)
 ESP_IPS = [
-    "http://10.110.231.128/",
-    # "http://10.110.235.99/",
+    "http://10.110.105.38/",
+    "http://10.110.105.39/"
 ]
 
 # Track executed tasks to prevent duplicates
