@@ -7,6 +7,7 @@ import os
 import requests  # Added for potential ESP requests (currently commented)
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import literal
 
 # ESP configuration (commented for now)
 ESP_IPS = [
@@ -77,21 +78,27 @@ def check_schedules(db, Schedule):
 
 
 def clear_past_schedules(db, Schedule):
-    """Delete schedules whose datetime is in the past (already rung)."""
+    """Delete schedules whose datetime is in the past."""
     now = datetime.now()
     now_str = now.strftime("%Y-%m-%d %H:%M:%S")
-    past_schedules = Schedule.query.filter(
-        db.func.concat(Schedule.schedule_date, ' ', Schedule.schedule_time) <= now_str
-    ).all()
+
     
-    deleted_count = len(past_schedules)
-    if deleted_count > 0:
-        for s in past_schedules:
-            db.session.delete(s)
-        db.session.commit()
-        print(f"Deleted {deleted_count} past schedules")
-    else:
-        pass
+
+    try:
+        past_schedules = Schedule.query.filter(
+            (Schedule.schedule_date + literal(" ") + Schedule.schedule_time) <= now_str
+        ).all()
+
+        deleted_count = len(past_schedules)
+
+        if deleted_count > 0:
+            for s in past_schedules:
+                db.session.delete(s)
+            db.session.commit()
+            print(f"Deleted {deleted_count} past schedules")
+    except Exception as e:
+        print(f"clear_past_schedules error: {e}")
+
 
 
 def start_scheduler(app, db, Schedule):
